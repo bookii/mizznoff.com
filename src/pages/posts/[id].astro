@@ -1,0 +1,22 @@
+---
+import "zenn-content-css/lib/index.css";
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/base.astro";
+import { getVisiblePostsNewestFirst } from "../../lib/posts";
+
+export async function getStaticPaths() {
+	const posts = await getVisiblePostsNewestFirst();
+	return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title } = post.data;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={title}>
+	<div class="znc">
+		<h1>{title}</h1>
+		<Content />
+	</div>
+</BaseLayout>
