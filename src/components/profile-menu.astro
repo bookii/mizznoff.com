@@ -1,0 +1,15 @@
+---
+import { Image } from "astro:assets";
+import avatar from "../assets/images/avatar.webp";
+---
+
+<div class="dropdown dropdown-hover dropdown-end">
+	<div tabindex="0" role="button">
+		<Image src={avatar} alt="プロフィール" class="size-10 rounded-full" />
+	</div>
+	<div tabindex="0" class="dropdown-content card bg-base-100 shadow w-64">
+		<div class="card-body">
+			<p>プロフィール</p>
+		</div>
+	</div>
+</div>

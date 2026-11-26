@@ -1,0 +1,62 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getExcerpt } from "../lib/excerpt";
+import { formatDateWithDots } from "../lib/format-date";
+import Card from "./card.astro";
+
+interface Props {
+	post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { id, data } = post;
+---
+
+<Card href={`/posts/${id}/`} title={data.title} thumbnail={data.thumbnail}>
+	<div class="min-h-0 flex-1" data-excerpt-area>
+		<p class="line-clamp-(--excerpt-line-count) leading-6 text-base-content/70">
+			{getExcerpt(post)}
+		</p>
+	</div>
+	<time
+		class="shrink-0 leading-none text-sm my-1"
+		datetime={data.publishedAt.toISOString()}
+	>
+		{formatDateWithDots(data.publishedAt)}
+	</time>
+	<ul class="mt-1 flex shrink-0 flex-wrap gap-1">
+		{data.tags.map((tag) => (
+			<li class="badge badge-outline text-xs px-2 pb-px">#{tag}</li>
+		))}
+	</ul>
+</Card>
+
+<script>
+	// CSS だけでは「残りの高さに収まる行数」で切れないため、行数を測って line-clamp に渡す
+	function fitExcerptToArea(area: HTMLElement) {
+		const excerpt = area.firstElementChild as HTMLElement;
+		area.style.flex = "";
+		excerpt.hidden = false;
+		excerpt.style.removeProperty("--excerpt-line-count");
+		const lineHeight = parseFloat(getComputedStyle(excerpt).lineHeight);
+		const fittingLineCount = Math.floor(area.clientHeight / lineHeight);
+		const textLineCount = Math.round(excerpt.scrollHeight / lineHeight);
+		const lineCount = Math.min(fittingLineCount, textLineCount);
+		excerpt.hidden = lineCount === 0;
+		excerpt.style.setProperty("--excerpt-line-count", String(lineCount));
+		// 行に満たない余りを日付の上ではなくカードの下端に回す
+		area.style.flex = `0 0 ${lineCount * lineHeight}px`;
+	}
+
+	// 欄の高さは自分で固定するので、変化を見るのは外側のカード本体
+	const resizeObserver = new ResizeObserver((entries) => {
+		for (const { target } of entries) {
+			fitExcerptToArea(target.querySelector("[data-excerpt-area]")!);
+		}
+	});
+	for (const area of document.querySelectorAll<HTMLElement>(
+		"[data-excerpt-area]",
+	)) {
+		resizeObserver.observe(area.parentElement!);
+	}
+</script>

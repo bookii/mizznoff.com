@@ -1,6 +1,7 @@
 ---
 import "zenn-content-css/lib/index.css";
 import { render } from "astro:content";
+import TableOfContents from "../../components/table-of-contents.astro";
 import BaseLayout from "../../layouts/base.astro";
 import { getVisiblePostsNewestFirst } from "../../lib/posts";
 
@@ -11,12 +12,28 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { title } = post.data;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <BaseLayout title={title}>
-	<div class="znc">
-		<h1>{title}</h1>
-		<Content />
+	<div class="grid grid-cols-1 gap-6 md:grid-cols-[8fr_3fr]">
+		<article class="znc min-w-0">
+			<h1>{title}</h1>
+			<Content />
+		</article>
+		<aside class="hidden md:sticky md:top-4 md:block md:self-start">
+			<TableOfContents headings={headings} />
+		</aside>
 	</div>
 </BaseLayout>
+
+<style>
+	article.znc {
+		--c-text-link: var(--color-primary);
+	}
+
+	article :global(:is(h1, h2, h3, h4, h5, h6)) {
+		font-weight: bold;
+		line-height: 1.8;
+	}
+</style>

@@ -1,0 +1,20 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+
+<nav>
+	<ul class="text-sm space-y-1.5">
+		{tocHeadings.map(({ depth, slug, text }) => (
+			<li class:list={{ "pl-4": depth === 3 }}>
+				<a href={`#${slug}`}>{text}</a>
+			</li>
+		))}
+	</ul>
+</nav>

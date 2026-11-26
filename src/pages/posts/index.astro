@@ -1,0 +1,17 @@
+---
+import CardGrid from "../../components/card-grid.astro";
+import PostCard from "../../components/post-card.astro";
+import BaseLayout from "../../layouts/base.astro";
+import { getVisiblePostsNewestFirst } from "../../lib/posts";
+
+const posts = await getVisiblePostsNewestFirst();
+---
+
+<BaseLayout title="Blog">
+	<h1 class="text-3xl font-bold text-center pb-6">Blog</h1>
+	<CardGrid>
+		{posts.map((post) => (
+			<PostCard post={post} />
+		))}
+	</CardGrid>
+</BaseLayout>
