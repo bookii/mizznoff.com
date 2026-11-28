@@ -14,10 +14,12 @@
 		"fmt": "prettier --write ."
 	},
 	"dependencies": {
+		"@astrojs/markdown-remark": "7.3.10",
 		"@fontsource-variable/m-plus-2": "5.3.1",
 		"@tailwindcss/vite": "4.3.5",
 		"astro": "7.4.13",
 		"daisyui": "5.8.2",
+		"remark-breaks": "4.0.0",
 		"tailwindcss": "4.3.5",
 		"zenn-content-css": "0.5.15"
 	},
